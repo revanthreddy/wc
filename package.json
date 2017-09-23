@@ -9,7 +9,8 @@
     "express": "^3.21.1",
     "swaggerize-express": "^4.0.0",
     "telesign": "^1.1.2",
-    "telesignsdk": "^2.0.1"
+    "telesignsdk": "^2.0.1",
+    "watson-developer-cloud": "^2.39.0"
   },
   "main": "index.js",
   "keywords": [

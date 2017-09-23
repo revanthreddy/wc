@@ -76,3 +76,34 @@ app.post('/sendreminder', function (req, res) {
     client.sms.message(messageCallback, phoneNumber, message, messageType);
     return res.status(200).send("sms sent");
 });
+
+
+
+app.post('/schedule', function (req, res) {
+    console.log(req.body.text)
+    return res.status(200).send("Meeting scheduled");
+});
+
+
+app.post('/tellme', function (req, res) {
+    
+    var ConversationV1 = require('watson-developer-cloud/conversation/v1');
+    
+    var conversation = new ConversationV1({
+    username: 'cacf5340-cd2d-4bae-9aee-c5375c3c7101',
+    password: '3FDpgrE0zvie',
+    version_date: ConversationV1.VERSION_DATE_2017_05_26
+    });
+    
+    conversation.message({
+    input: { text: req.body.text},
+    workspace_id: '22e2cd9b-0b72-4760-9c33-1bd871a3797a'
+    }, function(err, response) {
+        if (err) {
+        console.error(err);
+        } else {
+            return res.status(200).send(JSON.stringify(response.output.text));
+        }
+    });
+
+});
