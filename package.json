@@ -1,0 +1,22 @@
+{
+  "name": "NodeJsSampleTemplate",
+  "description": "NodeJsSampleTemplate",
+  "version": "1.0.0",
+  "author": "rev",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^3.21.1",
+    "swaggerize-express": "^4.0.0",
+    "telesign": "^1.1.2",
+    "telesignsdk": "^2.0.1"
+  },
+  "main": "index.js",
+  "keywords": [
+    "express",
+    "nodejs"
+  ],
+  "scripts": {
+    "start": "node index.js"
+  }
+}
