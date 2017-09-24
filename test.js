@@ -1,19 +1,20 @@
-var mysql = require('mysql');
-    var connection = mysql.createConnection({
-        host: 'weddingcrasher.cpmzubridkml.us-east-1.rds.amazonaws.com',
-        user: 'root',
-        password: 'test1234',
-        database: 'db1'
-    });
+var request = require("request")
 
-    connection.connect();
-
-    connection.query('SELECT * from schedule order by created desc limit 5', function (error, results, fields) {
-        if (error) throw error;
+var options = {
+        'url' : 'https://hooks.slack.com/services/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',
+        'headers' : {
+            'Content-type' : 'application/json'
+        },
         
-        results.forEach(function(result) {
-            console.log(result.id);
-        });
-    });
+        // json : JSON.stringify({data : "User finished signing the contract"})
+        body :  "{\"text\":\"User finished signing the contract\"}"
+    }
 
-    connection.end();
+
+    "{\"text\":\"data\"}"
+
+    request.post(options , function(err , resp , body){
+        console.log(err)
+        console.log(body)
+    
+    });

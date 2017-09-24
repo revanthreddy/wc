@@ -260,6 +260,69 @@ app.post('/tellme', function (req, res) {
 });
 
 
+app.post('/likeacake' , function(req , res){
+//     var text = "random meeting";
+//     if(req.body.text)
+//         text = req.body.text
+//     console.log(text)
+    
+//   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+//   var code = '';
+//   for (var i = 0; i < 5; i++)
+//     code += possible.charAt(Math.floor(Math.random() * possible.length));
+
+//     var requestBody = {
+//     "@odata.context": "https://progress.the-dataguy.com/api/odata4/Test/$metadata#schedules/$entity",
+//     "id": code,
+//     "details" : text,
+//     "owner_event": "Owen wilson",
+//     "created": (new Date()).getTime(),
+//     "status_event": "Incomplete"
+//     }
+//     var options ={
+//         url: 'https://progress.the-dataguy.com/api/odata4/Test/schedules',
+//         headers : {
+//             'Authorization' : 'Basic aGRwdXNlcjIzOldlZGRpbmdDcmFzaGVycw==',
+//             'Content-Type'  : 'application/json'
+
+//         },
+//         body : JSON.stringify(requestBody)
+//     }
+
+//     request.post(options , function(err , resp , body){
+//         if(err){
+//             console.log(err)
+//             return res.status(500).send("scheduling failed")
+//         }
+//         else
+//             console.log(body)
+//             return res.status(200).send("Scheduling successfull");
+//     })
+});
+
+
+app.get('/esigncall' , function(req,res){
+    var options = {
+        'url' : 'https://hooks.slack.com/services/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',
+        'headers' : {
+            'Content-type' : 'application/json'
+        },
+        
+        body :  "{\"text\":\"User finished signing the contract\"}"
+    }
+
+    request.post(options , function(err , resp , body){
+        if(err){
+            console.log(err)
+            return res.status(500).send("callback failed")
+        }
+        else
+            return res.status(200).send('User signed the contract');
+    
+    });
+});
+
+
 
 
 function getSchedules() {
