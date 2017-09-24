@@ -7,6 +7,7 @@
     "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
     "express": "^3.21.1",
+    "request": "^2.82.0",
     "swaggerize-express": "^4.0.0",
     "telesign": "^1.1.2",
     "telesignsdk": "^2.0.1",

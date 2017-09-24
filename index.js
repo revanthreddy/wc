@@ -3,6 +3,7 @@ var app = express();
 var server = require('http').createServer(app);
 var path = require('path');
 var TeleSignSDK = require('telesignsdk');
+var request = require("request")
 
 var bodyParser = require('body-parser')
 
@@ -41,7 +42,55 @@ app.get('/ip', function (req, res) {
 
 
 app.post('/sendcontract', function (req, res) {
-    return res.status(200).send("hello");
+    var requestBody = {
+        "name":"CakeContract",
+        "description":"Cake Contract",
+        "emailMessage":"This message should be delivered to all signers",
+        "autocomplete":true,
+        "type":"PACKAGE",
+        "visibility":"ACCOUNT",
+        "due":null,
+        "language":"en",
+        "status" : "SENT",
+        "roles": [
+            {
+            "id": "663e0c2d-99ac-4d64-a08f-1b289632aba7",
+            "type": "SIGNER",
+            "signers": [
+                {
+                "id": "663e0c2d-99ac-4d64-a08f-1b289632aba7",
+                "firstName": "Swami",
+                "lastName": "Sundaramurthy",
+                "email": "revanth.reddy@gmail.com"
+                }
+            ],
+            "name": "Swami"
+            }
+        ]
+    }
+    var options ={
+        url: 'https://sandbox.esignlive.com/api/packages/BF1nbylLhpx1sM5W0LQ6NqxS8Vs=/clone',
+        headers : {
+            'Authorization' : 'Basic MmxtbE1HNmpKTFFHOmtWSFRWV1hCYllVUg==',
+            'Resource+Family' : 'userAuthenticationTokens',
+            'Content-Type'  : 'application/json'
+
+        },
+        body : JSON.stringify(requestBody)
+    }
+
+    request.post(options , function(err , resp){
+        if(err){
+            console.log(err)
+            return res.status(500).send("contract seding failed")
+        }
+        else
+            return res.status(200).send("Contracts sent");
+    })
+
+
+
+    
 });
 
 app.post('/sendreminder', function (req, res) {
