@@ -301,7 +301,7 @@ app.post('/likeacake' , function(req , res){
 });
 
 
-app.get('/esigncall' , function(req,res){
+app.post('/esigncall' , function(req,res){
     var options = {
         'url' : 'https://hooks.slack.com/services/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',
         'headers' : {
