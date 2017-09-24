@@ -169,7 +169,6 @@ app.post('/schedule', function (req, res) {
     "created": (new Date()).getTime(),
     "status_event": "Incomplete"
     }
-    console.log(requestBody)
     var options ={
         url: 'https://progress.the-dataguy.com/api/odata4/Test/schedules',
         headers : {
