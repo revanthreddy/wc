@@ -80,7 +80,8 @@ app.post('/sendcontract', function (req, res) {
     // }
 
     var options ={
-        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/sendcontract'
+        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/sendcontract',
+        timeout : 30000
         
     }
     request.get(options , function(err , resp){
@@ -92,10 +93,59 @@ app.post('/sendcontract', function (req, res) {
             return res.status(200).send("Contracts sent");
     })
 
-
-
     
 });
+
+app.post('/sharereco' , function(req,res){
+    var options ={
+        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/sharereco',
+        timeout : 30000
+        
+    }
+    request.get(options , function(err , resp){
+        if(err){
+            console.log(err)
+            return res.status(500).send("contract seding failed")
+        }
+        else
+            return res.status(200).send("Contracts sent");
+    })
+})
+
+app.post('/classify' , function(req,res){
+    var options ={
+        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/classify',
+        timeout : 30000
+        
+    }
+    request.get(options , function(err , resp){
+        if(err){
+            console.log(err)
+            return res.status(500).send("contract seding failed")
+        }
+        else
+            return res.status(200).send("Contracts sent");
+    })
+})
+
+app.post('/searchfor' , function(req,res){
+    var text = encodeURI("show top cakes")
+    if(req.body.text) 
+        text = encodeURI(req.body.text)
+    var options ={
+        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/search?text='+text,
+        timeout : 30000
+        
+    }
+    request.get(options , function(err , resp){
+        if(err){
+            console.log(err)
+            return res.status(500).send("contract seding failed")
+        }
+        else
+            return res.status(200).send("Contracts sent");
+    })
+})
 
 app.post('/sendreminder', function (req, res) {
     const customerId = "9B40B970-164E-4388-8793-EB81AAD03FAB"; // Todo: find in portal.telesign.com
