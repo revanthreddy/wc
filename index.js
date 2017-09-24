@@ -129,7 +129,8 @@ app.post('/classify' , function(req,res){
 })
 
 app.post('/searchfor' , function(req,res){
-    var text = encodeURI("show top cakes")
+    var text = encodeURI("find green cakes")
+    console.log(req.body.text)
     if(req.body.text) 
         text = encodeURI(req.body.text)
     var options ={
@@ -143,7 +144,7 @@ app.post('/searchfor' , function(req,res){
             return res.status(500).send("contract seding failed")
         }
         else
-            return res.status(200).send("Contracts sent");
+            return res.status(200).send("sending suggestions");
     })
 })
 
