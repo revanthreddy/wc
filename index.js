@@ -155,15 +155,21 @@ app.post('/schedule', function (req, res) {
     if(req.body.text)
         text = req.body.text
     console.log(text)
+    
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var code = '';
+  for (var i = 0; i < 5; i++)
+    code += possible.charAt(Math.floor(Math.random() * possible.length));
+
     var requestBody = {
     "@odata.context": "https://progress.the-dataguy.com/api/odata4/Test/$metadata#schedules/$entity",
-    "id": uuidv4(),
-    "type": "Appointment",
+    "id": code,
     "details" : text,
     "owner_event": "Owen wilson",
-    "created": (new Date()).getMilliseconds(),
+    "created": (new Date()).getTime(),
     "status_event": "Incomplete"
     }
+    console.log(requestBody)
     var options ={
         url: 'https://progress.the-dataguy.com/api/odata4/Test/schedules',
         headers : {
@@ -236,14 +242,14 @@ app.post('/tellme', function (req, res) {
     var ConversationV1 = require('watson-developer-cloud/conversation/v1');
     
     var conversation = new ConversationV1({
-    username: 'cacf5340-cd2d-4bae-9aee-c5375c3c7101',
-    password: '3FDpgrE0zvie',
+    username: '20d98b15-5caf-4b88-8f5c-f5ae05c17560',
+    password: 'yMNekZcmAwtZ',
     version_date: ConversationV1.VERSION_DATE_2017_05_26
     });
     
     conversation.message({
     input: { text: req.body.text},
-    workspace_id: '22e2cd9b-0b72-4760-9c33-1bd871a3797a'
+    workspace_id: 'afae70f9-c6df-4eee-b6e7-4a8587b9275b'
     }, function(err, response) {
         if (err) {
         console.error(err);
