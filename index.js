@@ -97,8 +97,9 @@ app.post('/sendcontract', function (req, res) {
 });
 
 app.post('/sharereco' , function(req,res){
+    var url = req.body.text
     var options ={
-        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/sharereco',
+        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/sharereco'+url,
         timeout : 30000
         
     }
@@ -113,8 +114,9 @@ app.post('/sharereco' , function(req,res){
 })
 
 app.post('/classify' , function(req,res){
+    var url = req.body.text
     var options ={
-        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/classify',
+        url: 'http://ec2-54-209-238-111.compute-1.amazonaws.com:8080/classify?'+url,
         timeout : 30000
         
     }
