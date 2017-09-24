@@ -4,8 +4,11 @@ var server = require('http').createServer(app);
 var path = require('path');
 var TeleSignSDK = require('telesignsdk');
 var request = require("request")
+var cors = require('cors')
+const uuidv4 = require('uuid/v4');
 
 var bodyParser = require('body-parser')
+
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -17,11 +20,6 @@ const httpport = 8000
 
 // Setup Port to Use for Server Communication
 server.listen(httpport);
-// Parses RESTful body content to determine XML/JSON/other formats
-//app.use(express.bodyParser());
-
-// Not sure. Research
-// app.use(express.methodOverride());
 
 
 
@@ -29,6 +27,8 @@ server.listen(httpport);
 app.use(express.static(path.join(__dirname + '/public')));
 
 app.use(app.router);
+
+app.use(cors());
 
 app.get('/', function (req, res) {
     console.log(__dirname);
@@ -97,42 +97,139 @@ app.post('/sendreminder', function (req, res) {
     const customerId = "9B40B970-164E-4388-8793-EB81AAD03FAB"; // Todo: find in portal.telesign.com
     const apiKey = "mDZbJyQVPaYOKdWlzxWjn9Fo5CygqVQ6HV8b4/QCYYFmtxvu+TMhPGbjf12TuV6diW8hP5H53XVdrn+gTBN7aw=="; // Todo: find in portal.telesign.com
     const rest_endpoint = "https://rest-api.telesign.com"; // Todo: Enterprise customer, change this!
-    const timeout = 10*1000; // 10 secs
+    const timeout = 10 * 1000; // 10 secs
 
-    const client = new TeleSignSDK( customerId,
+
+
+    const client = new TeleSignSDK(customerId,
         apiKey,
         rest_endpoint,
         timeout // optional
         // userAgent
     );
+    var mysql = require('mysql');
+    var connection = mysql.createConnection({
+        host: 'weddingcrasher.cpmzubridkml.us-east-1.rds.amazonaws.com',
+        user: 'root',
+        password: 'test1234',
+        database: 'db1'
+    });
 
-    const phoneNumber = "15404499765";
-    const message = "You're scheduled for a dentist appointment at 2:30PM.";
-    const messageType = "ARN";
+    connection.connect();
 
-    console.log("## MessagingClient.message ##");
-
-    function messageCallback(error, responseBody) {
-        if (error === null) {
-            console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
-                ` => code: ${responseBody['status']['code']}` +
-                `, description: ${responseBody['status']['description']}`);
-        } else {
-            console.error("Unable to send message. " + error);
+    connection.query('SELECT * from schedule order by created desc limit 1', function (error, results, fields) {
+        if (error) {
+            return res.status(500).send("Fail");
         }
-    }
 
-    client.sms.message(messageCallback, phoneNumber, message, messageType);
-    return res.status(200).send("sms sent");
+        const phoneNumber = "15404499765";
+        const message = results[0].details;
+        const messageType = "ARN";
+
+        console.log("## MessagingClient.message ##");
+
+        function messageCallback(error, responseBody) {
+            if (error === null) {
+                console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
+                    ` => code: ${responseBody['status']['code']}` +
+                    `, description: ${responseBody['status']['description']}`);
+            } else {
+                console.error("Unable to send message. " + error);
+            }
+        }
+
+        client.sms.message(messageCallback, phoneNumber, message, messageType);
+        return res.status(200).send("sms sent");
+
+    });
+
+    connection.end();
+
+
 });
 
 
 
 app.post('/schedule', function (req, res) {
-    console.log(req.body.text)
-    return res.status(200).send("Meeting scheduled");
+    var text = "random meeting";
+    if(req.body.text)
+        text = req.body.text
+    console.log(text)
+    var requestBody = {
+    "@odata.context": "https://progress.the-dataguy.com/api/odata4/Test/$metadata#schedules/$entity",
+    "id": uuidv4(),
+    "type": "Appointment",
+    "details" : text,
+    "owner_event": "Owen wilson",
+    "created": (new Date()).getMilliseconds(),
+    "status_event": "Incomplete"
+    }
+    var options ={
+        url: 'https://progress.the-dataguy.com/api/odata4/Test/schedules',
+        headers : {
+            'Authorization' : 'Basic aGRwdXNlcjIzOldlZGRpbmdDcmFzaGVycw==',
+            'Content-Type'  : 'application/json'
+
+        },
+        body : JSON.stringify(requestBody)
+    }
+
+    request.post(options , function(err , resp , body){
+        if(err){
+            console.log(err)
+            return res.status(500).send("scheduling failed")
+        }
+        else
+            console.log(body)
+            return res.status(200).send("Scheduling successfull");
+    })
+
 });
 
+
+//schedule list
+app.get('/schedule' , cors(),function (req,res){
+    // var options ={
+    //     url: 'https://progress.the-dataguy.com/api/odata4/Test/schedules?$top=5&$orderby=created',
+    //     headers : {
+    //         'Authorization' : 'Basic aGRwdXNlcjIzOldlZGRpbmdDcmFzaGVycw==',
+    //         'Content-Type'  : 'application/json'
+
+    //     }
+    // }
+
+    // request.get(options , function(err , resp , body){
+    //     if(err){
+    //         console.log(err)
+    //         return res.status(500).send("schedule list failed")
+    //     }
+    //     else
+    //         return res.status(200).send(JSON.parse(body).value);
+    // })
+
+
+
+    var mysql = require('mysql');
+    var connection = mysql.createConnection({
+        host: 'weddingcrasher.cpmzubridkml.us-east-1.rds.amazonaws.com',
+        user: 'root',
+        password: 'test1234',
+        database: 'db1'
+    });
+
+    connection.connect();
+
+    connection.query('SELECT * from schedule order by created desc limit 5', function (error, results, fields) {
+        if (error) {
+            return res.status(500).send("Fail");
+        }
+        
+        return res.status(200).send(results);
+        
+    });
+
+    connection.end();
+});
 
 app.post('/tellme', function (req, res) {
     
@@ -156,3 +253,25 @@ app.post('/tellme', function (req, res) {
     });
 
 });
+
+
+
+
+function getSchedules() {
+    var mysql = require('mysql');
+    var connection = mysql.createConnection({
+        host: 'weddingcrasher.cpmzubridkml.us-east-1.rds.amazonaws.com',
+        user: 'root',
+        password: 'test1234',
+        database: 'db1'
+    });
+
+    connection.connect();
+
+    connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+        if (error) throw error;
+        console.log('The solution is: ', results[0].solution);
+    });
+
+    connection.end();
+}
